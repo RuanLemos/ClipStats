@@ -74,7 +74,7 @@ scanFolder('D:\clipes', all_games)
 
 
 for game in all_games:
-    print(f"Game: {game.name} - Clips founded: {game.clip_amount()} - Folder size: {convert_size(game.folder_size())}")
+    print(f"Game: {game.name} - Clips found: {game.clip_amount()} - Folder size: {convert_size(game.folder_size())}")
     total_clips += game.clip_amount()
     total_size += game.folder_size()
     
