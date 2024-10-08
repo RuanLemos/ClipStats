@@ -1,0 +1,7 @@
+se isso aparecer, eu quebrei o programa
+Label 1
+Move AbsJ [*] J1) 0.0 J2) 120.35 J3) -158.57 J4) -3.28 J5) -17.46 J6) -0.0 T) 0.0 Sp 25 Ad 15 As 10 Dd 20 Ds 5
+Move AbsJ [trsdgfdhf] J1) 0.0 J2) 120.35 J3) -158.57 J4) -3.28 J5) -17.46 J6) -0.0 T) 0.0 Sp 25 Ad 15 As 10 Dd 20 Ds 5
+Move L [*] X) 000 Y) 000 Z) 000 Rx) 000 Ry) 000 Rz) 000 T) 0.0 Sp 25 Ad 15 As 10 Dd 20 Ds 5
+Move J [*] X) 000 Y) 000 Z) 000 Rx) 000 Ry) 000 Rz) 000 T) 0.0 Sp 25 Ad 15 As 10 Dd 20 Ds 5
+Return

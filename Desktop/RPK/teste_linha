@@ -1,0 +1,146 @@
+from tkinter import *
+from tkinter import ttk
+
+# Configuração da janela principal
+root = Tk()
+root.wm_title("RAPACK RTP 1.5")
+root.resizable(width=False, height=False)
+root.attributes('-fullscreen', True)
+root.geometry('1024x600+0+0')
+
+# Criação do Notebook
+nb = ttk.Notebook(root, width=1024, height=600)
+nb.place(x=0, y=35)
+s = ttk.Style()
+s.configure('.', font=('Helvetica', 20))
+
+# Criação da aba
+tab1 = ttk.Frame(nb)
+nb.add(tab1, text=' Program ')
+
+# Frame para o Listbox
+progframe = Frame(tab1)
+progframe.place(x=55, y=35)
+
+# Listbox dentro do progframe
+tab1.progView = Listbox(progframe, width=57, height=13, font=("Helvetica", 14))
+tab1.progView.place(x=12, y=20)
+
+def loadProg():
+	tab1.progView.bind('<<ListboxSelect>>', progViewselect)
+	tab1.progView.delete ("0", END)
+	numView.delete ("0", END)
+	#print(str(progframe))
+	readProg()
+	#time.sleep(.2)
+	ProgEntryField1['text']=ProgEntryField.get()
+	num1=0
+
+	for item in prog:
+		if(item[:4] == 'Move'):
+			index = item.find("]") + 1
+			result = item[:index]
+			index_parens = getIndexParens(item)
+			result += item[index_parens + 5:]
+			#print(result)
+			tab1.progView.insert(END,result)
+		else:
+			tab1.progView.insert(END,item)
+		numView.insert(END,num1)
+		num1=num1+1
+
+	tab1.progView.pack()
+	tab1.progView.select_set(selRow)
+	numView.select_set(selRow)
+	tab1.progView.see(selRow)
+	numView.see(selRow)
+	#scrollbar.config(command=tab1.progView.yview)
+	savePosData()
+
+
+#Just gets the index of the last coordinate-related parentheses
+def getIndexParens(item):
+	parens_count = 0
+	print(item)
+	for i, char in enumerate(item):
+		if char == ')':
+			parens_count += 1
+			if parens_count == 7:
+				index_parens = i
+				break
+	return(index_parens)
+
+
+#Adds the speed-related values with a simple formula, instead of having it manually inserted
+def speedExtras(cmd):
+	index = cmd.find('Sp') + 3
+	speed = int(cmd[index:])
+	print(speed)
+	cmd += ' Ad ' + str(int(speed * .6)) #Acceleration duration
+	cmd += ' As ' + str(int(speed * .4)) #Acceleration speed
+	cmd += ' Dd ' + str(int(speed * .8)) #Deceleration duration
+	cmd += ' Ds ' + str(int(speed * .2)) #Deceleration speed
+
+	return(cmd)
+
+
+#Hides the coordinates of movement-related commands in the UI
+def hideCoords(item):
+	index = item.find("]") + 1
+	result = item[:index]
+	index_parens = getIndexParens(item)
+	result += item[index_parens + 5:]
+	return(result)
+
+
+def readProg():
+	global prog
+	prog = [None]
+	fileName = ProgEntryField.get()
+	try:
+		with open(fileName, 'r') as file:
+			prog = [row.strip() for row in file]
+			
+			#Verifica se o arquivo ta vazio. Caso sim, bota os valores padrão nele
+			if not prog or all(line == '' for line in prog):
+				prog = [' ', 'Label 1', 'Return']
+				with open(fileName, 'w') as write_file:
+					write_file.write('\n'.join(prog))
+	except:
+		#Cai aqui caso o arquivo esteja sendo criado
+		with open(ProgEntryField.get(), 'w') as file:
+			file.write(' \nLabel 1 \nReturn')
+			prog = [' ', 'Label 1', 'Return']
+
+	print(prog)
+	
+	'''
+	Toda essa parte do programa é como se lia os arquivos com pickle.
+	Porém, usava binário e não texto, então foi descartado.
+	program = []
+	try:
+		program = pickle.load(open(ProgEntryField.get(),"rb"))
+	except:
+		try:
+			program = [' ','Label 1',"Return"]
+			pickle.dump([' ','Label 1',"Return"],open(ProgEntryField.get(),"wb"))
+			count = tab1.progView.listcount()
+		except:
+			#Retirado devido criar novo programa quando cancelar evento open#
+			prog = ['! Program '+ProgEntryField.get()+' !','Label 1',"Return"]
+			pickle.dump(prog,open("new","wb"))
+			ProgEntryField.insert(0,"new")
+	
+	#isso aqui é uma gambiarra maldita pra fazer o output ser uma lista e não uma tupla.
+	#program é uma tupla, e tuplas não podem ter seu valor alterado, por isso fiz essa palhaçada.
+	n = 0
+	
+
+	for item in program:
+		prog[n] = item
+		n+=1 '''
+	#print(prog)
+	#saveAsTxt()
+
+# Inicia o loop principal
+root.mainloop()
